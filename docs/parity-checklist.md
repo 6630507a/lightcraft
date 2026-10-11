@@ -1,6 +1,6 @@
 # Lightroom parity checklist
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** minor (rapid slider entry; LR-PROF-CAMERACOLOR: tone curve from black-and-white camera JPEGs; LR-VIEW-ZOOM, LR-VIEW-COMPARE: Compare and Reference zoom windows; LR-IMP-FORMATS, LR-IMP-CAMERA-COVERAGE: EOS R5 Mark II CR3 decodes; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md; filesystem history retry/Undo/Redo evidence; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md) · **Target:** Adobe Lightroom Classic 15.5 / Lightroom 9.6
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** minor (MENU-HELP-REPORTBUG: Help ▸ Report a Bug… (#1015); rapid slider entry; LR-PROF-CAMERACOLOR: tone curve from black-and-white camera JPEGs; LR-VIEW-ZOOM, LR-VIEW-COMPARE: Compare and Reference zoom windows; LR-IMP-FORMATS, LR-IMP-CAMERA-COVERAGE: EOS R5 Mark II CR3 decodes; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md; filesystem history retry/Undo/Redo evidence; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md) · **Target:** Adobe Lightroom Classic 15.5 / Lightroom 9.6
 
 The measured, row-by-row checklist: one row per Lightroom feature, menu item and shortcut, what we
 have and what is missing. It answers *does the feature exist?* (feature breadth). Whether it is good
@@ -573,6 +573,7 @@ visible menu bar yet: the menu model is only exposed through the control channel
 | MENU-HELP-WHATSNEW | What's new | P2 | ✅ | `cmd:app.whatsNew` | |
 | MENU-HELP-SHORTCUTS | Keyboard shortcuts | P1 | ✅ | `cmd:app.shortcuts` | |
 | MENU-HELP-FEEDBACK | Send feedback | P2 | ✅ | `cmd:app.feedback` | opens a new issue on the project's GitHub |
+| MENU-HELP-REPORTBUG | Report a bug | P2 | ✅ | `cmd:app.reportBug`, `crates/ui-egui/src/bug_report.rs` | an extra (issue #1015): Help ▸ Report a Bug… previews, then writes `lightcraft-report-<time>.txt` next to the logs (what happened, the System Info rows, this run's log and optionally the two before) and reveals it, and opens a new GitHub issue pre-filled with the same and the end of the log (link ≤ 8,000 characters); the home folder and photo file names are hidden by default; nothing is sent. Not yet: an offer after a crash, a duplicate search, reporting without a GitHub account |
 | MENU-HELP-LOGFOLDER | Open log folder | P2 | ✅ | `cmd:app.openLogFolder` | an extra (the reference app has no such item): Help ▸ Open Log Folder reveals `logs/lightcraft.log` in the system file manager (Finder, Explorer, or the folder on Linux); off on the web and in `--memory` sessions, which keep no log (issue #260) |
 | MENU-HELP-SYSINFO | System info | P2 | ✅ | `cmd:app.systemInfo`, `cmd:library.info` | Help ▸ System Info…: version, OS, CPU threads, GPU, memory budget, preview size, library, timings; Copy to Clipboard; one Close button, like About (#782); JSON for agents (`open: false`) |
 | MENU-CTX-GRID | Photo context menu | P0 | ✅ | `crates/ui-egui/src/panels/grid.rs` (`context_menu`) | rate, flag, label, add to / remove from album, rename, virtual copy, version, stack, copy / paste / paste selected, reset, merge, rotate, show in Finder, export / export with preset, set as album cover (in an album), delete (restore / delete permanently in Recently Deleted) |
@@ -787,6 +788,7 @@ Latin stays upright. Advanced Japanese composition remains open. Regression cove
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-11 | minor | MENU-HELP-REPORTBUG: Help ▸ Report a Bug… writes a report file and opens a pre-filled issue (issue #1015) |
 | 2026-10-11 | minor | KEY-SLIDER-TYPE: honor immediate Return/Escape and keep typed keys in the value editor; add regression references |
 | 2026-10-11 | minor | LR-PROF-CAMERACOLOR: raws with a black-and-white camera JPEG take its tone curve (issue #577) |
 | 2026-10-11 | minor | LR-VIEW-ZOOM and LR-VIEW-COMPARE: Compare and Reference are sharp at 1:1 (zoom windows per pane, two originals kept decoded while they are open); statuses unchanged |
