@@ -2145,5 +2145,11 @@
   "Adding to Apple Photos…": "Додавання до Apple Фото…",
   "not added to Apple Photos (cancelled)": "не додано до Apple Фото (скасовано)",
   "The first time, macOS asks whether LightCraft may control Photos.": "Першого разу macOS запитає, чи може LightCraft керувати програмою «Фото».",
-  "Adding to Apple Photos": "Додавання до Apple Фото"
+  "Adding to Apple Photos": "Додавання до Apple Фото",
+  "Continue in Background": "Продовжити у фоні",
+  "Folder not found": "Теку не знайдено",
+  "Dismiss": "Сховати",
+  "Review…": "Переглянути…",
+  "Open Synchronize Folder with what the scan found": "Відкрити «Синхронізувати теку» з результатами пошуку",
+  "You can go on working: a notice at the top left says when the scan is done.": "Можна працювати далі: сповіщення вгорі ліворуч повідомить, коли пошук завершиться."
 }

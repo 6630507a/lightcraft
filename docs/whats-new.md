@@ -2,6 +2,13 @@
 
 ## 2026-10-11
 
+### Synchronize Folder: no need to wait for the scan
+- While Synchronize Folder… scans a folder (a large one on a network share can take minutes), its button is
+  **Continue in Background**: the dialog closes, the scan goes on under its row in the activity stack, and you can
+  go on working. When it is done nothing pops up: a notice in the activity stack says how many changes were found.
+  Click it to open the dialog with the result, or ✕ to let go of it. A scan that found nothing to do only says so.
+  Cancel and the row's ✕ stop the scan as before. One folder is scanned at a time.
+
 ### JPEG XL export
 - Export as JPEG XL (issue #247): Format ▸ JPEG XL in the Export dialog, `format: "jxl"` for agents and the CLI
   (`render in.raw -o out.jxl`). Quality as for JPEG, or Lossless; Effort (Fast / Normal) trades time for a

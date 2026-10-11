@@ -1951,5 +1951,11 @@
   "Adding to Apple Photos…": "Adicionando ao Fotos da Apple…",
   "not added to Apple Photos (cancelled)": "não adicionadas ao Fotos da Apple (cancelado)",
   "The first time, macOS asks whether LightCraft may control Photos.": "Na primeira vez, o macOS pergunta se o LightCraft pode controlar o Fotos.",
-  "Adding to Apple Photos": "Adicionando ao Fotos da Apple"
+  "Adding to Apple Photos": "Adicionando ao Fotos da Apple",
+  "Continue in Background": "Continuar em segundo plano",
+  "Folder not found": "Pasta não encontrada",
+  "Dismiss": "Dispensar",
+  "Review…": "Revisar…",
+  "Open Synchronize Folder with what the scan found": "Abrir Sincronizar pasta com o que a verificação encontrou",
+  "You can go on working: a notice at the top left says when the scan is done.": "Você pode continuar trabalhando: um aviso no canto superior esquerdo informa quando a verificação terminar."
 }

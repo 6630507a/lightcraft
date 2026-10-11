@@ -2109,5 +2109,11 @@
   "Adding to Apple Photos…": "Wird zu Apple Fotos hinzugefügt…",
   "not added to Apple Photos (cancelled)": "nicht zu Apple Fotos hinzugefügt (abgebrochen)",
   "The first time, macOS asks whether LightCraft may control Photos.": "Beim ersten Mal fragt macOS, ob LightCraft Fotos steuern darf.",
-  "Adding to Apple Photos": "Wird zu Apple Fotos hinzugefügt"
+  "Adding to Apple Photos": "Wird zu Apple Fotos hinzugefügt",
+  "Continue in Background": "Im Hintergrund fortsetzen",
+  "Folder not found": "Ordner nicht gefunden",
+  "Dismiss": "Verwerfen",
+  "Review…": "Ansehen…",
+  "Open Synchronize Folder with what the scan found": "„Ordner synchronisieren“ mit dem Ergebnis der Suche öffnen",
+  "You can go on working: a notice at the top left says when the scan is done.": "Sie können weiterarbeiten: Ein Hinweis oben links meldet, wenn die Suche abgeschlossen ist."
 }

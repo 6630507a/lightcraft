@@ -1951,5 +1951,11 @@
   "Adding to Apple Photos…": "正在加入 Apple 照片…",
   "not added to Apple Photos (cancelled)": "未加入 Apple 照片（已取消）",
   "The first time, macOS asks whether LightCraft may control Photos.": "第一次使用時，macOS 會詢問是否允許 LightCraft 控制「照片」。",
-  "Adding to Apple Photos": "正在加入 Apple 照片"
+  "Adding to Apple Photos": "正在加入 Apple 照片",
+  "Continue in Background": "在背景繼續",
+  "Folder not found": "找不到資料夾",
+  "Dismiss": "忽略",
+  "Review…": "檢視…",
+  "Open Synchronize Folder with what the scan found": "以掃描結果開啟「同步資料夾」",
+  "You can go on working: a notice at the top left says when the scan is done.": "你可以繼續工作：掃描完成時左上角會出現通知。"
 }
