@@ -2,6 +2,14 @@
 
 ## 2026-10-11
 
+### Auto Import looks in subfolders
+- Settings ▸ Import ▸ Auto Import has an **Include subfolders** box (issue #1109): photos that arrive anywhere
+  inside the watched folder, e.g. a tethering or sync app's dated folders, are added too. Off by default, so the
+  watched folder's top level only, as before. Hidden folders, links to folders and the library's own folder (where
+  copied photos go) are never looked in; the scan goes 16 folder levels deep and stops after 200,000 files and
+  folders, and says so. A subfolder LightCraft can't read is skipped with a warning. Agents: `subfolders` on
+  `library.autoImport`.
+
 ### JPEG XL export
 - Export as JPEG XL (issue #247): Format ▸ JPEG XL in the Export dialog, `format: "jxl"` for agents and the CLI
   (`render in.raw -o out.jxl`). Quality as for JPEG, or Lossless; Effort (Fast / Normal) trades time for a

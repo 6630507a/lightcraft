@@ -53,9 +53,9 @@ cited here still exists. Formerly docs/parity.md.
 | Y. Menus | 84 | 0 | 4 | 8 | 47/47 (100%) | 23/23 (100%) |
 | Z. Keyboard shortcuts (desktop) | 76 | 3 | 3 | 1 | 49/52 (94%) | 23/24 (96%) |
 | Lightroom Classic extras | 34 | 16 | 35 | 8 | — | 24/26 (92%) |
-| **Total** | 407 | 50 | 73 | 35 | 192/200 (96%) | 145/157 (92%) |
+| **Total** | 408 | 51 | 72 | 35 | 193/201 (96%) | 145/157 (92%) |
 
-Weighted completion (✅ = 1, 🟡 = ½, 🚫 left out): **81.5%** of 530 in-scope rows — P0 98.0% of 200 · P1 95.2% of 157 · P2 49.7% of 172.
+Weighted completion (✅ = 1, 🟡 = ½, 🚫 left out): **81.6%** of 531 in-scope rows — P0 98.0% of 201 · P1 95.2% of 157 · P2 50.0% of 172.
 <!-- /parity:summary -->
 
 ## Top gaps and shortcut notes
@@ -73,7 +73,7 @@ differences and missing bindings are in [ui-parity.md](ui-parity.md#shortcuts).
 | LR-IMP-DRAGDROP | Drop files/folders to import | P0 | ✅ | `crates/ui-egui/src/lib.rs` (dropped files → `cmd:library.import`) | dropping onto a specific album not supported |
 | LR-IMP-DUPES | Skip duplicates by content | P1 | ✅ | `crates/engine/src/import.rs`, `crates/engine/src/tests_import.rs` | |
 | LR-IMP-DEVICE | Import from camera/card | P1 | ✅ | `cmd:library.devices`, `cmd:file.addFromDevice`, `crates/engine/src/devices.rs` | mounted volumes with a DCIM folder (macOS /Volumes, Linux /media and /run/media, Windows drive letters); File → Import from Device → the import review, copying into the library by default; menus serve the last scan and rescan in the background (never blocking a frame; hot-plugs repaint); copies are verified (a new file, synced, checked against the content hash the scan computed — byte compare with the source when there is none, issue #134; a bad copy is removed and reported as failed, never counted as imported; taken names get -1, -2…, never replaced — issue #96, `crates/engine/src/import_move.rs`); no PTP/MTP (cameras that don't mount as a disk) |
-| LR-IMP-AUTO | Watched-folder auto import | P2 | ✅ | `cmd:library.autoImport`, `cmd:library.autoImportScan`, `crates/ui-egui/src/panels/settings.rs` | Settings ▸ Import ▸ Auto Import: a watched folder whose new photos are added (in place or copied) once complete, into an optional album; scanned every 3 s |
+| LR-IMP-AUTO | Watched-folder auto import | P2 | ✅ | `cmd:library.autoImport`, `cmd:library.autoImportScan`, `crates/ui-egui/src/panels/settings.rs` | Settings ▸ Import ▸ Auto Import: a watched folder whose new photos are added (in place or copied) once complete, into an optional album; scanned every 3 s. **Include subfolders** (off by default, so the default is unchanged; `subfolders` on `library.autoImport`, reported by `library.autoImportScan`, issue #1109) also lists its subfolders' photos: hidden folders, folder links and the library's own folder (where copies go) are skipped, 16 levels / 200,000 entries at most, an unreadable subfolder or a bound reached is a warning (`listingWarnings`), not a failed scan |
 | LR-IMP-PRESET | Preset on import | P2 | ✅ | `cmd:library.import` (`preset`) | chosen in the import review; one History entry |
 | LR-IMP-RAWDEFAULT | Raw defaults | P1 | ✅ | `cmd:library.preferences`, `crates/engine/src/import.rs`, `crates/ui-egui/src/panels/settings.rs` | LightCraft default / a preset / per camera (make + model); non-raw default too; the preset look counts as unedited and Reset returns to it |
 | LR-IMP-MIGRATE | Migrate other catalogs | OOS | 🚫 | | |
