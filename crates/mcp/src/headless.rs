@@ -10,12 +10,8 @@ use serde_json::{Value, json};
 
 use crate::backend::{Backend, ProgressHook};
 
-/// File extensions recognised as photos when expanding folders.
-pub const PHOTO_EXTENSIONS: &[&str] = &[
-    "jpg", "jpeg", "png", "tif", "tiff", "webp", "dng", "cr2", "cr3", "nef", "arw", "raf", "orf", "rw2", "rwl", "raw", "pef", "srw", "psd", "jxl",
-    "gif", "bmp", "avif", "heic", "heif", "nrw", // avif is preview-only; heic/heif/nrw match the engine list (#1080)
-    "iiq", "crw", "mrw", "x3f", "kdc", "mos", "erf", "3fr", "fff",
-];
+/// File extensions recognised as photos when expanding folders: the engine's import list.
+pub use lightcraft_engine::import::EXTENSIONS as PHOTO_EXTENSIONS;
 
 /// Headless backend: a [`Session`] with filesystem hooks.
 pub struct Headless {
@@ -178,12 +174,12 @@ impl Backend for Headless {
 /// and make paths absolute.
 pub fn expand_paths(paths: &[String]) -> Vec<String> {
     let absolute = |p: &Path| std::path::absolute(p).unwrap_or_else(|_| p.to_path_buf()).to_string_lossy().to_string();
-    let photo = |p: &Path| p.extension().is_some_and(|e| PHOTO_EXTENSIONS.contains(&e.to_string_lossy().to_lowercase().as_str()));
     let mut out = Vec::new();
     for p in paths {
         let path = Path::new(p);
         if path.is_dir() {
-            let w = lightcraft_engine::walk::files_in(path, None, lightcraft_engine::walk::Limits::default(), photo);
+            let w =
+                lightcraft_engine::walk::files_in(path, None, lightcraft_engine::walk::Limits::default(), lightcraft_engine::import::is_supported);
             out.extend(w.files.iter().map(|f| absolute(f)));
         } else {
             // Explicit files are kept even with unknown extensions (the probe decides).
@@ -234,6 +230,28 @@ pub fn write_image(path: &Path, img: &Rgba8, quality: u8) -> Result<(), String> 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn folder_discovery_matches_engine_extensions() {
+        let dir = std::env::temp_dir().join(format!("lc-mcp-discovery-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let nested = dir.join("trip/day2");
+        std::fs::create_dir_all(&nested).unwrap();
+        let mut expected = Vec::new();
+        for ext in lightcraft_engine::import::EXTENSIONS {
+            for (folder, name) in [(&dir, format!("lower.{ext}")), (&nested, format!("upper.{}", ext.to_ascii_uppercase()))] {
+                let path = folder.join(name);
+                std::fs::write(&path, b"discovery only, not a decoded photo").unwrap();
+                expected.push(path.to_string_lossy().into_owned());
+            }
+        }
+        std::fs::write(nested.join("notes.txt"), b"not a photo").unwrap();
+        let mut found = expand_paths(&[dir.to_string_lossy().into_owned()]);
+        expected.sort();
+        found.sort();
+        assert_eq!(found, expected);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
 
     /// Headless sessions look for the SAM 3 model where the desktop app does, and `segment.model.status` reports it (issue #619).
     #[test]
