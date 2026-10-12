@@ -215,7 +215,7 @@ differences and missing bindings are in [ui-parity.md](ui-parity.md#shortcuts).
 )
 | LR-EDIT-OPTICS-DEFRINGE | Defringe | P1 | ✅ | `ctl:optics.defringe*` | no fringe eyedropper |
 | LR-EDIT-OPTICS-MANUAL | Manual distortion / vignetting | P1 | ✅ | `ctl:optics.distortion`, `ctl:optics.vignetting`, `ctl:optics.vignettingMidpoint` | |
-| LR-EDIT-GEOM-UPRIGHT | Upright | P1 | ✅ | `cmd:geometry.upright`, `cmd:geometry.guides` | LightCraft's own solver; Lightroom's saved Upright from XMP is kept as it is (LR-META-XMP); Rotate Left / Right turns a stored correction with the photo, and Paste / Sync / Auto Sync put it into each photo's frame |
+| LR-EDIT-GEOM-UPRIGHT | Upright | P1 | ✅ | `cmd:geometry.upright`, `cmd:geometry.guides` | LightCraft's own solver; Lightroom's saved Upright from XMP is kept as it is (LR-META-XMP); Rotate Left / Right turns a stored correction with the photo; a correction is the photo's own: Paste / Sync / Auto Sync turn it into virtual copies of the same file and carry only the mode and sliders to other files, presets keep the mode only |
 | LR-EDIT-GEOM-MANUAL | Manual transform | P1 | ✅ | `ctl:geometry.*` | |
 | LR-EDIT-GEOM-CONSTRAIN | Constrain crop | P1 | ✅ | `crates/ui-egui/src/panels/right.rs` (checkbox → `cmd:develop.merge`) | |
 | LR-EDIT-GEOM-GRID | Grid while transforming | P2 | ✅ | `crates/ui-egui/src/panels/detail.rs` | a fine grid over the photo while a geometry slider is dragged |
@@ -787,7 +787,7 @@ Latin stays upright. Advanced Japanese composition remains open. Regression cove
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-12 | minor | LR-META-XMP: Lightroom's saved Upright correction for the selected mode is kept from XMP instead of being solved again (issue #205; catalogs fall back and report it); `PerspectiveUpright` 2, 3, 4 read as Full, Level, Vertical; sidecar crops follow the file's orientation (Synchronize Folder too); LR-EDIT-GEOM-UPRIGHT: Rotate turns a stored correction, Paste / Sync carry it into each photo's frame; statuses unchanged |
+| 2026-10-12 | minor | LR-META-XMP: Lightroom's saved Upright correction for the selected mode is kept from XMP instead of being solved again (issue #205; catalogs fall back and report it); `PerspectiveUpright` 2, 3, 4 read as Full, Level, Vertical; sidecar crops follow the file's orientation (Synchronize Folder too); LR-EDIT-GEOM-UPRIGHT: Rotate turns a stored correction; Paste / Sync / presets carry the Upright mode to other files and the correction only to virtual copies; statuses unchanged |
 | 2026-10-11 | minor | KEY-SLIDER-TYPE: honor immediate Return/Escape and keep typed keys in the value editor; add regression references |
 | 2026-10-11 | minor | LR-PROF-CAMERACOLOR: raws with a black-and-white camera JPEG take its tone curve (issue #577) |
 | 2026-10-11 | minor | LR-VIEW-ZOOM and LR-VIEW-COMPARE: Compare and Reference are sharp at 1:1 (zoom windows per pane, two originals kept decoded while they are open); statuses unchanged |
