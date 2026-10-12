@@ -1,5 +1,17 @@
 # What's new in LightCraft
 
+## 2026-10-12
+
+### Lightroom Upright comes across
+- Photos edited in Lightroom with Upright Auto, Full, Level or Vertical now open framed as they are in Lightroom
+  (issue #205). LightCraft keeps the correction Lightroom saved with the edit instead of analysing the photo again.
+  This works for XMP sidecars, DNG files with the edit inside and Lightroom Classic catalogs. Photos imported
+  earlier get it with Photo ▸ Read Metadata from File.
+- Lightroom's Upright values 2, 3 and 4 now read as Full, Level and Vertical. They used to come in as Level,
+  Vertical and Full.
+- Guided Upright doesn't come across yet (Lightroom's guides aren't read), and the import report says so. The
+  report no longer lists Lightroom's Upright analysis fields as adjustments that weren't imported.
+
 ## 2026-10-11
 
 ### JPEG XL export
