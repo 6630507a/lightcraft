@@ -78,6 +78,9 @@ pub struct SyncInput {
     photos: Vec<(Arc<Photo>, SidecarNaming)>,
     /// For the colour label names a sidecar may use.
     labels: Catalog,
+    /// The session's file probe (import's, inside its memory budget): how a sidecar's crop and
+    /// saved Upright learn the file's orientation.
+    probe: Option<crate::media::FileProbe>,
 }
 
 /// What changed in a folder since it came into the library.
@@ -181,7 +184,7 @@ impl SyncInput {
         let namings = s.sidecar_namings(&ids);
         let photos = ids.iter().zip(namings).filter_map(|(id, naming)| s.catalog.photo(*id).map(|p| (Arc::clone(p), naming))).collect();
         let (scan, _) = ScanInput::new(s, &[path.to_string()]);
-        Ok(SyncInput { folder: path.to_string(), scan, photos, labels: s.catalog.clone() })
+        Ok(SyncInput { folder: path.to_string(), scan, photos, labels: s.catalog.clone(), probe: s.media.file_probe.clone() })
     }
 }
 
@@ -192,19 +195,21 @@ impl SyncInput {
 /// library's photos, which run on several threads too. Stops early when `progress.files.cancel`
 /// is set.
 pub fn scan_with(input: SyncInput, progress: &SyncProgress) -> FolderChanges {
-    let SyncInput { folder, scan, photos, labels } = input;
+    let SyncInput { folder, scan, photos, labels, probe } = input;
     let seen: Vec<Arc<Photo>> = photos.iter().map(|(p, _)| Arc::clone(p)).collect();
     if !cfg!(target_arch = "wasm32") && !Path::new(&folder).is_dir() {
         return FolderChanges { path: folder, seen, offline: true, ..Default::default() };
     }
     // (no threads on the web: one after the other there)
     #[cfg(target_arch = "wasm32")]
-    let (out, checks) = (crate::import::scan_with(scan, std::slice::from_ref(&folder), &progress.files), check_photos(&photos, &labels, progress));
+    let (out, checks) =
+        (crate::import::scan_with(scan, std::slice::from_ref(&folder), &progress.files), check_photos(&photos, &labels, probe.as_ref(), progress));
     #[cfg(not(target_arch = "wasm32"))]
     let (out, checks) = std::thread::scope(|sc| {
         let photos = &photos;
         let labels = &labels;
-        let checks = sc.spawn(move || check_photos(photos, labels, progress));
+        let probe = probe.as_ref();
+        let checks = sc.spawn(move || check_photos(photos, labels, probe, progress));
         let out = crate::import::scan_with(scan, std::slice::from_ref(&folder), &progress.files);
         // (a check that panicked counts as nothing found; the scan still reports the rest)
         (out, checks.join().unwrap_or_default())
@@ -329,11 +334,11 @@ enum Check {
     News,
 }
 
-fn check_photo(p: &Photo, naming: SidecarNaming, labels: &Catalog) -> Check {
+fn check_photo(p: &Photo, naming: SidecarNaming, labels: &Catalog, probe: Option<&crate::media::FileProbe>) -> Check {
     let Some(file) = crate::cmd::missing::checked_path(p) else { return Check::Nothing };
     if !Path::new(file).exists() {
         Check::Missing
-    } else if p.copy_of.is_none() && sidecar_has_news(labels, p, naming) {
+    } else if p.copy_of.is_none() && sidecar_has_news(labels, p, naming, probe) {
         Check::News
     } else {
         Check::Nothing
@@ -342,12 +347,17 @@ fn check_photo(p: &Photo, naming: SidecarNaming, labels: &Catalog) -> Check {
 
 /// [`check_photo`] for each photo, in order, on several threads (each file is a wait on the
 /// disk, not work for the CPU). Photos not reached before a cancel count as nothing found.
-fn check_photos(photos: &[(Arc<Photo>, SidecarNaming)], labels: &Catalog, progress: &SyncProgress) -> Vec<Check> {
+fn check_photos(
+    photos: &[(Arc<Photo>, SidecarNaming)],
+    labels: &Catalog,
+    probe: Option<&crate::media::FileProbe>,
+    progress: &SyncProgress,
+) -> Vec<Check> {
     use std::sync::atomic::Ordering::Relaxed;
     progress.to_check.store(photos.len(), Relaxed);
     let cancel = &progress.files.cancel;
     let check = |p: &Photo, naming: SidecarNaming| {
-        let c = check_photo(p, naming, labels);
+        let c = check_photo(p, naming, labels, probe);
         progress.checked.fetch_add(1, Relaxed);
         c
     };
@@ -415,7 +425,7 @@ impl Session {
 
 /// Whether `p`'s XMP sidecar file was saved after the library last had its say about the photo
 /// (imported, or edited here) and says something the library doesn't.
-fn sidecar_has_news(labels: &Catalog, p: &Photo, naming: SidecarNaming) -> bool {
+fn sidecar_has_news(labels: &Catalog, p: &Photo, naming: SidecarNaming, probe: Option<&crate::media::FileProbe>) -> bool {
     let Source::File { path } = &p.source else { return false };
     let Some(file) = crate::sidecar::find_sidecar(path, naming) else { return false };
     let Ok(meta) = std::fs::metadata(&file) else { return false };
@@ -430,9 +440,11 @@ fn sidecar_has_news(labels: &Catalog, p: &Photo, naming: SidecarNaming) -> bool 
     }
     let Ok(text) = std::fs::read_to_string(&file) else { return false };
     let Ok(mut sc) = crate::sidecar::parse_sidecar(&text, crate::crs::Target::for_photo(p)) else { return false };
-    // compared in the photo's frame, as it would be read; a crop that can't be placed is still news,
-    // so the synchronize that reads it says why it was left
-    if framed(&mut sc, path) {
+    // compared in the photo's frame, as it would be read; a crop that can't be placed (no frame) and
+    // differs from the photo's is still news, so the synchronize that reads it says why it was left
+    if let Some(held) = framed(&mut sc, path, probe)
+        && lightcraft_develop::apply_partial(&p.develop, &serde_json::json!({"crop": held}), 1.0).crop != p.develop.crop
+    {
         return true;
     }
     let sc = sc.resolve_label(labels);
@@ -470,9 +482,10 @@ pub struct SyncWork {
     import: Option<(crate::import::ImportJob, Vec<String>)>,
     moved: Vec<FolderMoved>,
     missing: Vec<FolderPhoto>,
-    /// (photo, its file, how its sidecar is named)
     /// (photo, its file, sidecar naming, white balance target)
     sidecars: Vec<(PhotoId, String, SidecarNaming, crate::crs::Target)>,
+    /// The session's file probe, for the files' orientations ([`SyncInput`]).
+    probe: Option<crate::media::FileProbe>,
 }
 
 /// The catalog half of a synchronize (see [`SyncJob`]).
@@ -537,6 +550,7 @@ impl SyncJob {
             moved: if choice.relink_moved { moved } else { Vec::new() },
             missing: if choice.remove_missing { missing } else { Vec::new() },
             sidecars,
+            probe: s.media.file_probe.clone(),
         };
         let commit = SyncCommit {
             opts,
@@ -558,7 +572,7 @@ impl SyncWork {
     pub fn run(self, progress: &SyncProgress, mut send: impl FnMut(SyncStep) -> bool) {
         use std::sync::atomic::Ordering::Relaxed;
         let cancel = &progress.files.cancel;
-        let SyncWork { import, moved, missing, sidecars } = self;
+        let SyncWork { import, moved, missing, sidecars, probe } = self;
         let pieces = import.as_ref().map_or(0, |(_, f)| f.len()) + moved.len() + missing.len() + sidecars.len();
         progress.to_check.store(pieces, Relaxed);
         progress.checked.store(0, Relaxed);
@@ -602,7 +616,7 @@ impl SyncWork {
             if cancel.load(Relaxed) {
                 break;
             }
-            read.push((id, path.clone(), read_sidecar(&path, naming, target)));
+            read.push((id, path.clone(), read_sidecar(&path, naming, target, probe.as_ref())));
             step(1);
         }
         if !read.is_empty() {
@@ -613,7 +627,12 @@ impl SyncWork {
 
 /// Read and parse photo file `path`'s XMP sidecar file, its crop and saved Upright in the frame the
 /// file has now, as import reads them.
-fn read_sidecar(path: &str, naming: SidecarNaming, target: crate::crs::Target) -> std::result::Result<crate::sidecar::SidecarData, String> {
+fn read_sidecar(
+    path: &str,
+    naming: SidecarNaming,
+    target: crate::crs::Target,
+    probe: Option<&crate::media::FileProbe>,
+) -> std::result::Result<crate::sidecar::SidecarData, String> {
     let file = crate::sidecar::find_sidecar(path, naming).ok_or_else(|| "no XMP sidecar".to_string())?;
     let len = std::fs::metadata(&file).map_err(|e| format!("{}: {e}", file.display()))?.len();
     if len > MAX_SIDECAR_BYTES {
@@ -621,18 +640,18 @@ fn read_sidecar(path: &str, naming: SidecarNaming, target: crate::crs::Target) -
     }
     let text = std::fs::read_to_string(&file).map_err(|e| format!("{}: {e}", file.display()))?;
     let mut sc = crate::sidecar::parse_sidecar(&text, target).map_err(|e| format!("{}: {e}", file.display()))?;
-    framed(&mut sc, path);
+    framed(&mut sc, path, probe);
     Ok(sc)
 }
 
-/// Give a parsed sidecar of the photo whose file is `path` the frame the file has now (read only
-/// when the packet's crop or saved Upright needs it). Without one, the photo's crop is left as it
-/// is and the report says so; returns whether a crop was held that way.
-fn framed(sc: &mut crate::sidecar::SidecarData, path: &str) -> bool {
+/// Give a parsed sidecar of the photo whose file is `path` the frame the file has now, through the
+/// session's file probe (only when the packet's crop or saved Upright needs it). Without one, the
+/// photo's crop is left as it is and the report says so; returns the crop held that way.
+fn framed(sc: &mut crate::sidecar::SidecarData, path: &str, probe: Option<&crate::media::FileProbe>) -> Option<serde_json::Value> {
     if !sc.needs_frame() {
-        return false;
+        return None;
     }
-    sc.set_frame(crate::sidecar::probe_frame(path));
+    sc.set_frame(crate::sidecar::probe_frame(probe, path));
     sc.hold_unframed_crop()
 }
 
