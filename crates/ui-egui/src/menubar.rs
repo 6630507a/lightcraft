@@ -315,6 +315,7 @@ pub fn checked(app: &LightcraftApp, id: &str) -> Option<bool> {
         "view.leftPanel" => Some(u.left_panel),
         "view.faceBoxes" => Some(u.face_boxes),
         "view.filmstrip" => Some(u.filmstrip),
+        "view.frameRate" => Some(u.frame_rate),
         "view.histogram" => Some(u.histogram),
         "view.clipping" => Some(u.show_clipping),
         "view.visualizeHdr" => Some(u.hdr_visualize),

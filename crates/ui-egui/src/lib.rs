@@ -13,6 +13,7 @@ pub mod credits;
 pub mod date_picker;
 pub mod docking;
 pub mod export_task;
+mod frame_rate;
 pub mod headless;
 pub mod i18n;
 pub mod icons;
@@ -238,6 +239,9 @@ pub struct Perf {
     pub update_ms: f64,
     /// The slowest whole update since start.
     pub max_update_ms: f64,
+    /// The previous frame's whole time on this thread, painting (texture uploads) included, as
+    /// the host reports it (eframe's `cpu_usage`); `None` without a host report (headless).
+    pub host_frame_ms: Option<f64>,
     pub fps: f64,
 }
 
@@ -1234,6 +1238,9 @@ impl LightcraftApp {
 
     /// Frame timings once layout is done (`t0`: when layout started).
     fn end_frame(&mut self, ctx: &egui::Context, t0: f64) {
+        if self.ui.frame_rate {
+            frame_rate::show(ctx, self);
+        }
         ctx.output(|o| {
             for c in &o.commands {
                 if let egui::OutputCommand::CopyText(text) = c {
