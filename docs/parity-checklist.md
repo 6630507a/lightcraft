@@ -200,7 +200,7 @@ differences and missing bindings are in [ui-parity.md](ui-parity.md#shortcuts).
 | LR-EDIT-COLOR-GRADING | Colour grading wheels | P0 | ✅ | `ctl:grading.*`, `crates/ui-egui/src/panels/edit.rs` (`grading`) | 3-Way / Shadows / Midtones / Highlights tabs; a range tab shows one large wheel with Hue, Saturation and Luminance sliders; Blending and Balance in every tab; 3-Way shows the hovered wheel's hue and saturation; every wheel marks its neutral centre; Shift-drag locks the hue and changes saturation only, showing the spoke as a guide; the large wheel adds 25/50/75 % saturation rings (issue #559); each wheel's eye hides its effect for viewing only (`RenderJob::with_hidden_grading`, not saved, export unaffected) (issue #737). No Global wheel tab yet |
 | LR-EDIT-EFFECTS-TEXTURE | Texture | P0 | ✅ | `ctl:effects.texture` | |
 | LR-EDIT-EFFECTS-CLARITY | Clarity | P0 | ✅ | `ctl:effects.clarity` | |
-| LR-EDIT-EFFECTS-DEHAZE | Dehaze | P0 | ✅ | `ctl:effects.dehaze` | |
+| LR-EDIT-EFFECTS-DEHAZE | Dehaze | P0 | ✅ | `ctl:effects.dehaze` | From process V3 haze comes from a patch-minimum dark channel, the response eases in and no pixel is pushed to black (#1237); V1/V2 keep the old, too-strong response. Not yet measured against Lightroom |
 | LR-EDIT-EFFECTS-VIGNETTE | Post-crop vignette | P0 | ✅ | `ctl:vignette.*`, `crates/pipeline/src/finish.rs`, `crates/ui-egui/src/panels/edit.rs` | style picker (Highlight / Color / Paint) in the Effects section |
 | LR-EDIT-EFFECTS-GRAIN | Grain | P1 | ✅ | `ctl:grain.*` | |
 | LR-EDIT-DETAIL-SHARPEN | Sharpening | P0 | ✅ | `ctl:detail.sharpenAmount`, `ctl:detail.sharpenRadius`, `ctl:detail.sharpenDetail`, `ctl:detail.sharpenMasking` | no Alt-drag mask preview |
