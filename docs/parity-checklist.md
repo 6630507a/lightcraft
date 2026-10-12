@@ -1,6 +1,6 @@
 # Lightroom parity checklist
 
-> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-11 · **Change:** minor (rapid slider entry; LR-PROF-CAMERACOLOR: tone curve from black-and-white camera JPEGs; LR-VIEW-ZOOM, LR-VIEW-COMPARE: Compare and Reference zoom windows; LR-IMP-FORMATS, LR-IMP-CAMERA-COVERAGE: EOS R5 Mark II CR3 decodes; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md; filesystem history retry/Undo/Redo evidence; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md) · **Target:** Adobe Lightroom Classic 15.5 / Lightroom 9.6
+> **Last reviewed:** 2026-10-10 · **Last updated:** 2026-10-12 · **Change:** minor (KEYC-PANELS: F8 toggles the right panel, ⇧Tab hides and restores all panels; KEYC-HELP: F1; KEYC-RATING notes; rapid slider entry; LR-PROF-CAMERACOLOR: tone curve from black-and-white camera JPEGs; LR-VIEW-ZOOM, LR-VIEW-COMPARE: Compare and Reference zoom windows; LR-IMP-FORMATS, LR-IMP-CAMERA-COVERAGE: EOS R5 Mark II CR3 decodes; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md; filesystem history retry/Undo/Redo evidence; renamed from `parity.md`; Top gaps moved to gaps.md, shortcut notes to ui-parity.md) · **Target:** Adobe Lightroom Classic 15.5 / Lightroom 9.6
 
 The measured, row-by-row checklist: one row per Lightroom feature, menu item and shortcut, what we
 have and what is missing. It answers *does the feature exist?* (feature breadth). Whether it is good
@@ -50,12 +50,12 @@ cited here still exists. Formerly docs/parity.md.
 | V. Preferences (PREF) | 6 | 2 | 2 | 2 | 1/1 (100%) | 4/5 (80%) |
 | W. Cloud & AI infrastructure (CLOUD / AI) | 1 | 0 | 1 | 2 | — | — |
 | X. Cross-cutting behaviours (BEHAV) | 23 | 6 | 1 | 1 | 8/8 (100%) | 7/10 (70%) |
-| Y. Menus | 84 | 0 | 4 | 8 | 47/47 (100%) | 23/23 (100%) |
+| Y. Menus | 86 | 0 | 4 | 8 | 47/47 (100%) | 25/25 (100%) |
 | Z. Keyboard shortcuts (desktop) | 76 | 3 | 3 | 1 | 49/52 (94%) | 23/24 (96%) |
-| Lightroom Classic extras | 34 | 16 | 35 | 8 | — | 24/26 (92%) |
-| **Total** | 407 | 50 | 73 | 35 | 192/200 (96%) | 145/157 (92%) |
+| Lightroom Classic extras | 35 | 16 | 34 | 8 | — | 24/26 (92%) |
+| **Total** | 411 | 51 | 71 | 35 | 193/201 (96%) | 147/159 (92%) |
 
-Weighted completion (✅ = 1, 🟡 = ½, 🚫 left out): **81.5%** of 530 in-scope rows — P0 98.0% of 200 · P1 95.2% of 157 · P2 49.7% of 172.
+Weighted completion (✅ = 1, 🟡 = ½, 🚫 left out): **81.9%** of 533 in-scope rows — P0 98.0% of 201 · P1 95.3% of 159 · P2 50.6% of 172.
 <!-- /parity:summary -->
 
 ## Top gaps and shortcut notes
@@ -528,6 +528,8 @@ visible menu bar yet: the menu model is only exposed through the control channel
 | MENU-VIEW-ENTERFULLSCREEN | Enter Full Screen | P1 | ✅ | `cmd:view.enterFullScreen` | |
 | MENU-VIEW-PHOTOSPANEL | Show/Hide photos panel | P0 | ✅ | `cmd:view.leftPanel` | |
 | MENU-VIEW-FILMSTRIP | Show/Hide filmstrip | P0 | ✅ | `cmd:view.filmstrip` | |
+| MENU-VIEW-RIGHTPANEL | Show/Hide right panel — F8 | P1 | ✅ | `cmd:view.rightPanel`, `crates/ui-egui/src/menus.rs` | checked while a tool panel is shown; shows the panel that was hidden (Edit when there was none) |
+| MENU-VIEW-HIDEALL | Toggle All Panels (hide / show every panel) — ⇧Tab | P1 | ✅ | `cmd:view.allPanels`, `crates/ui-egui/src/menus.rs` | named Hide All Panels here, checked while they are hidden |
 | MENU-VIEW-INFO | Show/Hide info | P0 | ✅ | `cmd:panel.info` | |
 | MENU-VIEW-KEYWORDS | Show/Hide keywords | P0 | ✅ | `cmd:panel.keywords` | |
 | MENU-VIEW-ACTIVITY | Show/Hide activity (comments) | OOS | 🚫 | | our History panel is `panel.activity` |
@@ -762,18 +764,18 @@ From `08-lightroom-classic-extras.md` (Classic-only features) and part 2 of `06-
 | LRC-WEB-IMAGEINFO | Web gallery image info | OOS | 🚫 | | |
 | LRC-WEB-OUTPUT | Web gallery output | OOS | 🚫 | | |
 | LRC-WEB-UPLOAD | Web gallery upload | OOS | 🚫 | | |
-| KEYC-PANELS | Classic panel keys (Tab, ⇧Tab, T, F5–F8, solo) | P2 | ⬜ | | |
+| KEYC-PANELS | Classic panel keys (Tab, ⇧Tab, T, F5–F8, solo) | P2 | 🟡 | `cmd:view.rightPanel`, `cmd:view.allPanels`, `crates/ui-egui/src/menus.rs` | F8 toggles the right panel (the tool that was there comes back); ⇧Tab hides the side panels, Presets and filmstrip and a second press restores exactly what was shown, and does nothing in a text field (`tests_panel_keys.rs`). On a Mac keyboard F8 is Play/Pause unless fn is held or "Use F1, F2, … as standard function keys" is on. Missing: Tab (side panels), T (toolbar), F5, solo mode (F6, F7 in open PR #1078) |
 | KEYC-MODULES | Classic module switching (⌘⌥1–7) | P2 | 🚫 | | no modules in LightCraft |
 | KEYC-VIEWS | Classic view keys (E, G, C, N, L, F, I, ⇧R, ⌘⌥0) | P2 | 🟡 | `cmd:view.photoGrid`, `cmd:view.zoom100` | G works; E opens Edit (not loupe); no compare/survey/lights-out/screen modes |
 | KEYC-SECONDWINDOW | Classic secondary-window keys | P2 | ⬜ | | |
 | KEYC-CATALOG | Classic photo/catalog keys (⇧⌘I, ⌘', ⌘R, F2, ⌫, ⇧⌘E…) | P2 | ✅ | `cmd:library.import`, `cmd:photo.delete`, `cmd:photo.virtualCopy`, `cmd:app.showInFinder`, `cmd:dialog.rename`, `cmd:photo.editInExternal` | ⇧⌘I add, ⌘' virtual copy, ⌘R show in Finder, F2 rename, ⌫ delete, ⇧⌘E external editor |
 | KEYC-COMPARE | Classic grid/compare keys (Z, Home/End, =/−, ⌘⇧D, S…) | P2 | 🟡 | `cmd:view.zoomToggle` | Z toggles zoom; no compare, stacks, thumbnail-size keys |
-| KEYC-RATING | Classic rating/flag keys (1–5, ⇧1–5, 6–9, P, X, U, ⇧X, ⇧U, `[` `]`, \`) | P2 | 🟡 | `cmd:photo.rate`, `cmd:photo.pick`, `cmd:photo.flag` | 0–5 / Shift+0–5 and 6–9 / Shift+6–9; P/X/U, Shift+X/U and grid Shift+P work; tests cover batch/undo, active Compare candidate and text focus. Missing: Shift+P outside grids (Presets), rating `[` / `]`, flag cycle and filter-bar keys |
+| KEYC-RATING | Classic rating/flag keys (1–5, ⇧1–5, 6–9, P, X, U, ⇧X, ⇧U, `[` `]`, \`) | P2 | 🟡 | `cmd:photo.rate`, `cmd:photo.pick`, `cmd:photo.flag` | 0–5 / Shift+0–5 and 6–9 / Shift+6–9; P/X/U, Shift+X/U and grid Shift+P work; tests cover batch/undo, active Compare candidate and text focus. `[` / `]` change the rating in grids (`tests_relative_ratings.rs`). Missing: flag cycle (backtick) and the filter-bar `\` key |
 | KEYC-COLLECTIONS | Classic collection keys (⌘N, B…) | P2 | 🟡 | `cmd:dialog.newAlbum` | ⌘N new album; no quick collection |
 | KEYC-METADATA | Classic keyword/metadata keys (⌘K, ⌘S, ⌘⌥⇧C/V…) | P2 | 🟡 | `cmd:photo.saveMetadataToFile` | ⌘S saves metadata; no keyword sets, metadata copy/paste |
 | KEYC-DEVELOP | Classic develop keys (V, ⌘U, ⇧⌘U, R, Q, K, M, ⇧M, ⇧W, ⇧J, ⇧Q…) | P2 | 🟡 | `cmd:develop.treatment`, `cmd:develop.reset`, `cmd:crop.reset` | V, ⇧⌘R, ⌥⌘R, W, J, Y, ⇧Y, \ match; R/K/M/⇧M differ; no Classic keymap layer |
 | KEYC-MODULE-OUTPUT | Book / slideshow / print / map / web keys | P2 | ⬜ | | modules not implemented |
-| KEYC-HELP | Classic help keys (⌘/, F1) | P2 | 🟡 | `cmd:app.shortcuts` | ⌘/ only |
+| KEYC-HELP | Classic help keys (⌘/, F1) | P2 | ✅ | `cmd:app.shortcuts`, `cmd:app.help` | ⌘/ opens Keyboard Shortcuts, F1 LightCraft Help (`tests_panel_keys.rs`) |
 
 ### Japanese text watermarks
 
@@ -787,6 +789,7 @@ Latin stays upright. Advanced Japanese composition remains open. Regression cove
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-12 | minor | KEYC-PANELS: F8 toggles the right panel and Shift+Tab hides and restores all panels (🟡, was ⬜); KEYC-HELP: F1 opens help (✅); KEYC-RATING: `[` `]` are implemented, notes corrected; two View menu rows |
 | 2026-10-11 | minor | KEY-SLIDER-TYPE: honor immediate Return/Escape and keep typed keys in the value editor; add regression references |
 | 2026-10-11 | minor | LR-PROF-CAMERACOLOR: raws with a black-and-white camera JPEG take its tone curve (issue #577) |
 | 2026-10-11 | minor | LR-VIEW-ZOOM and LR-VIEW-COMPARE: Compare and Reference are sharp at 1:1 (zoom windows per pane, two originals kept decoded while they are open); statuses unchanged |
