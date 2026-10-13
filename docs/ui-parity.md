@@ -67,6 +67,15 @@ under the UI command that wraps it (a no-op error); the UI command now wins.
 
 **Library culling (KEYC-RATING):** `0–5`, `6–9` and `P/X/U` reach egui on macOS even when displayed in the native menu (adapted from PR #261; issue #283). `Shift+0–9` applies and advances once; `Shift+P` picks and advances in Photo Grid / Square Grid and retains Presets elsewhere. See [library shortcuts](library-shortcuts.md) for the verified Classic mapping and regression coverage. Remaining Classic gaps: flag cycling (backtick), the filter-bar `\` key, Tab and F5.
 
+**Alt/Option-drag previews (issue #937):** hold Alt (Option on macOS) while dragging an Edit slider, before or during
+the drag. Exposure, Highlights and Whites show highlight clipping (black, clipped channels in their colour, white where
+all three clip); Shadows and Blacks show shadow clipping (white, black where all three clip). Sharpening Amount shows
+greyscale, Radius and Detail the detail band sharpening amplifies, Masking the mask (white = sharpened); luminance Noise
+Reduction (Luminance, Detail, Contrast) shows greyscale. Releasing the key or the slider brings the photo back; the
+edit, its history and the histogram are unchanged (on a profiled display too). Not yet: mask range sliders and the
+Masking panel's local sliders. On Linux desktops that move windows with Alt+drag (KDE Plasma's
+default, also some GNOME / Xfce setups) the window manager takes the drag first: set its window-move modifier to Meta.
+
 **Still missing / broken:**
 - No Tab (side panels) or F5 yet; F6 and F7 are in PR #1078. F8 (right panel) and ⇧Tab (hide / show all
   panels) work: ⇧Tab hides the side panels, Presets and filmstrip and brings back exactly those; on a Mac
@@ -108,5 +117,6 @@ left panel, canvas, right panel, which is sensible but not tuned).
 |---|---|---|
 | 2026-10-12 | minor | Accessibility: an AccessKit tree audit test over every view, Develop tool and 13 dialogs; unnamed fields, slider ranges and the Auto Stack slider fixed; 30% → 55%; UI remaining 40–70 h → 34–58 h |
 | 2026-10-12 | minor | Shortcuts: F8 and Shift+Tab panel keys; F1 help and `[` `]` rating were already implemented; UI command counts recounted |
+| 2026-10-11 | minor | Alt/Option-drag slider previews (clipping, sharpening) and the Linux window-manager note |
 | 2026-10-11 | minor | Zoom row: Compare and Reference get zoom windows; what remains of LR-VIEW-ZOOM is overlays and soft proofing |
 | 2026-10-10 | major | Created: measured command and shortcut counts, assessment by area, estimates; moved the shortcut conflicts section here from the checklist |
