@@ -374,6 +374,9 @@ fn rotate(s: &mut Session, p: &Value, cw: bool) -> Result<Value> {
         if let Some(d) = s.develop_of(id) {
             let mut d = (*d).clone();
             d.orientation = d.orientation.rotated(cw);
+            // a stored Upright correction (LightCraft's or Lightroom's) turns with the photo
+            let turn = if cw { lightcraft_geom::Orientation::Rotate90 } else { lightcraft_geom::Orientation::Rotate270 };
+            d.geometry.upright_transform = d.geometry.upright_transform.map(|h| lightcraft_pipeline::upright::turned(&h, turn));
             ops.extend(s.develop_op(id, d, "Rotate"));
         }
     }

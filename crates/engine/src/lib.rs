@@ -64,6 +64,7 @@ pub mod segment;
 pub mod sidecar;
 pub mod smart;
 pub mod sync;
+pub mod upright_transfer;
 mod view;
 pub mod walk;
 
@@ -214,6 +215,9 @@ pub struct Session {
     pub(crate) faces: faces_index::FacesState,
     /// Copied develop settings (partial JSON) for Paste.
     pub clipboard: Option<Value>,
+    /// The photo the clipboard was copied from (an Upright correction moves only between entries of
+    /// the same file: [`crate::upright_transfer`]).
+    pub clipboard_source: Option<crate::upright_transfer::UprightSource>,
     /// The folder on disk the [`LibrarySource::Folder`] view browses.
     pub browse: Option<Browse>,
     /// The folder the [`LibrarySource::LibraryFolder`] view shows: the library's photos imported
@@ -357,6 +361,7 @@ impl Session {
             #[cfg(not(target_arch = "wasm32"))]
             faces: Default::default(),
             clipboard: None,
+            clipboard_source: None,
             meta_clipboard: None,
             browse: None,
             library_folder: None,
@@ -793,16 +798,28 @@ impl Session {
                 return Vec::new();
             }
         }
+        // an Upright correction moves only between entries of the same file
+        let source = self.catalog.photo(id).map(|p| crate::upright_transfer::source_of(p, new, &self.library_identity));
         self.selection
             .ids
             .iter()
             .filter(|x| **x != id)
             .filter_map(|x| self.develop_of(*x).map(|d| (*x, d)))
             .filter_map(|(x, d)| {
-                let synced = lightcraft_develop::apply_partial(&d, &delta, 1.0);
+                let synced = match self.catalog.photo(x) {
+                    Some(p) => crate::upright_transfer::transferred(p, &d, &delta, source.as_ref()),
+                    None => lightcraft_develop::apply_partial(&d, &delta, 1.0),
+                };
                 (synced != *d).then(|| self.develop_op(x, synced, label)).flatten()
             })
             .collect()
+    }
+
+    /// What `preset` at `amount` makes of photo `id`'s settings, as Apply Preset stores it (its
+    /// Upright correction settled: [`crate::upright_transfer::apply_preset`]); for previews too.
+    pub fn preset_look(&self, id: PhotoId, preset: &lightcraft_develop::Preset, amount: f64) -> Option<DevelopSettings> {
+        let p = self.catalog.photo(id)?;
+        Some(crate::upright_transfer::apply_preset(p, &p.develop, preset, amount))
     }
 
     /// The op that sets a photo's develop settings and appends a History entry (for batches).
@@ -1101,5 +1118,7 @@ mod tests_settings_files;
 mod tests_spots;
 #[cfg(test)]
 mod tests_sync;
+#[cfg(test)]
+mod tests_upright;
 #[cfg(test)]
 mod tests_xmp;
