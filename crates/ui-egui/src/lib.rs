@@ -8,6 +8,7 @@
 
 pub mod album_picker;
 pub mod brush_live;
+pub mod bug_report;
 pub mod control;
 pub mod credits;
 pub mod date_picker;
@@ -111,6 +112,8 @@ mod tests_preset_import;
 mod tests_preview_limit;
 #[cfg(test)]
 mod tests_quit_unsaved;
+#[cfg(test)]
+mod tests_report_bug;
 #[cfg(test)]
 mod tests_scroll;
 #[cfg(test)]

@@ -574,6 +574,7 @@ visible menu bar yet: the menu model is only exposed through the control channel
 | MENU-HELP-WHATSNEW | What's new | P2 | ✅ | `cmd:app.whatsNew` | |
 | MENU-HELP-SHORTCUTS | Keyboard shortcuts | P1 | ✅ | `cmd:app.shortcuts` | |
 | MENU-HELP-FEEDBACK | Send feedback | P2 | ✅ | `cmd:app.feedback` | opens a new issue on the project's GitHub |
+| MENU-HELP-REPORTBUG | Report a bug | P2 | ✅ | `cmd:app.reportBug`, `crates/ui-egui/src/bug_report.rs` | an extra (issue #1015): Help ▸ Report a Bug… previews, then writes `lightcraft-report-<time>.txt` next to the logs (what happened, the System Info rows, this run's log and optionally the two before) and reveals it, and opens a new GitHub issue pre-filled with the same and the end of the log (link ≤ 8,000 characters); the home folder and photo file names are hidden by default; nothing is sent. Not yet: an offer after a crash, a duplicate search, reporting without a GitHub account |
 | MENU-HELP-LOGFOLDER | Open log folder | P2 | ✅ | `cmd:app.openLogFolder` | an extra (the reference app has no such item): Help ▸ Open Log Folder reveals `logs/lightcraft.log` in the system file manager (Finder, Explorer, or the folder on Linux); off on the web and in `--memory` sessions, which keep no log (issue #260) |
 | MENU-HELP-SYSINFO | System info | P2 | ✅ | `cmd:app.systemInfo`, `cmd:library.info` | Help ▸ System Info…: version, OS, CPU threads, GPU, memory budget, preview size, library, timings; Copy to Clipboard; one Close button, like About (#782); JSON for agents (`open: false`) |
 | MENU-CTX-GRID | Photo context menu | P0 | ✅ | `crates/ui-egui/src/panels/grid.rs` (`context_menu`) | rate, flag, label, add to / remove from album, rename, virtual copy, version, stack, copy / paste / paste selected, reset, merge, rotate, show in Finder, export / export with preset, set as album cover (in an album), delete (restore / delete permanently in Recently Deleted) |
@@ -806,6 +807,7 @@ Latin stays upright. Advanced Japanese composition remains open. Regression cove
 | 2026-10-12 | minor | LR-HDR-EXPORT, LR-EXP-HDR: HLG AVIF export (`hdrTransfer`); LR-VIEW-HDR-DISPLAY: tested SDR/HDR display decision |
 | 2026-10-12 | minor | LR-EXP-PSD, MENU-FILE-PHOTOSHOP: Photo ▸ Edit In ▸ Open Original in Other Editor (RAW, no copy) hands the original files (the raws themselves) to the other editor in one start; statuses unchanged |
 | 2026-10-11 | patch | LR-LIB-SMARTALBUM: sidebar counts key on the library revision, so develop edits recount them only while a smart album reads develop state (issue #1057); status unchanged |
+| 2026-10-11 | minor | MENU-HELP-REPORTBUG: Help ▸ Report a Bug… writes a report file and opens a pre-filled issue (issue #1015) |
 | 2026-10-11 | minor | KEY-SLIDER-TYPE: honor immediate Return/Escape and keep typed keys in the value editor; add regression references |
 | 2026-10-11 | minor | LR-PROF-CAMERACOLOR: raws with a black-and-white camera JPEG take its tone curve (issue #577) |
 | 2026-10-11 | minor | LR-VIEW-ZOOM and LR-VIEW-COMPARE: Compare and Reference are sharp at 1:1 (zoom windows per pane, two originals kept decoded while they are open); statuses unchanged |
