@@ -2156,5 +2156,8 @@
   "Dismiss": "Сховати",
   "Review…": "Переглянути…",
   "Open Synchronize Folder with what the scan found": "Відкрити «Синхронізувати теку» з результатами пошуку",
-  "You can go on working: a notice at the top left says when the scan is done.": "Можна працювати далі: сповіщення вгорі ліворуч повідомить, коли пошук завершиться."
+  "You can go on working: a notice at the top left says when the scan is done.": "Можна працювати далі: сповіщення вгорі ліворуч повідомить, коли пошук завершиться.",
+  "Render to DNG": "Рендерити в DNG",
+  "Rendering to DNG": "Рендеринг у DNG",
+  "Render to DNG stopped unexpectedly": "Рендеринг у DNG несподівано зупинено"
 }

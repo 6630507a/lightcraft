@@ -1966,5 +1966,8 @@
   "Dismiss": "閉じる",
   "Review…": "確認…",
   "Open Synchronize Folder with what the scan found": "スキャンの結果を「フォルダを同期」で開く",
-  "You can go on working: a notice at the top left says when the scan is done.": "作業を続けられます。スキャンが終わると左上に通知が表示されます。"
+  "You can go on working: a notice at the top left says when the scan is done.": "作業を続けられます。スキャンが終わると左上に通知が表示されます。",
+  "Render to DNG": "DNG にレンダリング",
+  "Rendering to DNG": "DNG にレンダリング中",
+  "Render to DNG stopped unexpectedly": "DNG へのレンダリングが予期せず停止しました"
 }

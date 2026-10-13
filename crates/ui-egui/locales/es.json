@@ -2000,5 +2000,8 @@
   "Dismiss": "Descartar",
   "Review…": "Revisar…",
   "Open Synchronize Folder with what the scan found": "Abrir Sincronizar carpeta con lo que encontró la búsqueda",
-  "You can go on working: a notice at the top left says when the scan is done.": "Puedes seguir trabajando: un aviso arriba a la izquierda indica cuándo termina la búsqueda."
+  "You can go on working: a notice at the top left says when the scan is done.": "Puedes seguir trabajando: un aviso arriba a la izquierda indica cuándo termina la búsqueda.",
+  "Render to DNG": "Renderizar a DNG",
+  "Rendering to DNG": "Renderizando a DNG",
+  "Render to DNG stopped unexpectedly": "La renderización a DNG se detuvo inesperadamente"
 }

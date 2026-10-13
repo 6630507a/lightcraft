@@ -2002,5 +2002,8 @@
   "Dismiss": "忽略",
   "Review…": "查看…",
   "Open Synchronize Folder with what the scan found": "用扫描结果打开“同步文件夹”",
-  "You can go on working: a notice at the top left says when the scan is done.": "你可以继续工作：扫描完成时左上角会出现通知。"
+  "You can go on working: a notice at the top left says when the scan is done.": "你可以继续工作：扫描完成时左上角会出现通知。",
+  "Render to DNG": "渲染为 DNG",
+  "Rendering to DNG": "正在渲染为 DNG",
+  "Render to DNG stopped unexpectedly": "渲染为 DNG 意外停止"
 }

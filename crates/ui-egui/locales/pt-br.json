@@ -2003,5 +2003,8 @@
   "Dismiss": "Dispensar",
   "Review…": "Revisar…",
   "Open Synchronize Folder with what the scan found": "Abrir Sincronizar pasta com o que a verificação encontrou",
-  "You can go on working: a notice at the top left says when the scan is done.": "Você pode continuar trabalhando: um aviso no canto superior esquerdo informa quando a verificação terminar."
+  "You can go on working: a notice at the top left says when the scan is done.": "Você pode continuar trabalhando: um aviso no canto superior esquerdo informa quando a verificação terminar.",
+  "Render to DNG": "Renderizar em DNG",
+  "Rendering to DNG": "Renderizando em DNG",
+  "Render to DNG stopped unexpectedly": "A renderização em DNG parou inesperadamente"
 }

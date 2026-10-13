@@ -2123,5 +2123,8 @@
   "Dismiss": "Verwerfen",
   "Review…": "Ansehen…",
   "Open Synchronize Folder with what the scan found": "„Ordner synchronisieren“ mit dem Ergebnis der Suche öffnen",
-  "You can go on working: a notice at the top left says when the scan is done.": "Sie können weiterarbeiten: Ein Hinweis oben links meldet, wenn die Suche abgeschlossen ist."
+  "You can go on working: a notice at the top left says when the scan is done.": "Sie können weiterarbeiten: Ein Hinweis oben links meldet, wenn die Suche abgeschlossen ist.",
+  "Render to DNG": "Als DNG rendern",
+  "Rendering to DNG": "Als DNG rendern",
+  "Render to DNG stopped unexpectedly": "Rendern als DNG unerwartet angehalten"
 }
