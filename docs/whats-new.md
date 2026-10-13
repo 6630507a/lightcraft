@@ -81,6 +81,15 @@
 - The kept original no longer pushes everything else out of the cache: on a 64 MP raw it filled the cache share
   alone, so the photo's preview and thumbnail sources and its neighbours' were decoded from the raw again on every
   edit at 1:1, every zoom out and every step to the next photo.
+## 2026-10-12
+
+### Lens distortion correction for the Sony A7 III
+- Raws from the Sony A7 III (ILCE-7M3) now get the camera's own distortion correction, read from the file, like
+  the A7R IVA's: straight lines stay straight at wide angles (the FE 16–35 F4 ZA at 16 mm shifts detail near the
+  corners by up to about 40 px on a 24 MP photo) and at long ones (the FE 28–70 at 70 mm). It lines up with the
+  camera's JPEG to well under a pixel. Optics ▸ Enable Lens Corrections turns it off and Profile Distortion scales
+  it; photos imported before this pick it up with Photo ▸ Reload from Disk. Vignetting and chromatic aberration
+  from Sony files are not read yet.
 
 ## 2026-10-11
 
