@@ -101,7 +101,7 @@ ILCE-7M3: a checkerboard filling the frame on a TV (handheld) and on a desktop m
 uncompressed raws, apertures from wide open to f/8, plus one textured wall. Tables covered strong barrel (16 mm,
 −690 at the corner), strong pincushion (70 mm, +1161) and the sign change between them.
 
-Method (`scripts/sony_distortion_check.py`): LightCraft renders each ARW at full size with the profile correction
+Method (`tools/sony_distortion_check.py`): LightCraft renders each ARW at full size with the profile correction
 on and off; sub-pixel board corners (Hessian saddle points refined with `cornerSubPix`, kept only where the four
 quadrants alternate, labelled into rows and columns) are matched with the JPEG's by grid position, with the
 match fixed by the central corners before any fit, because a board is periodic. A similarity (zoom, rotation,
