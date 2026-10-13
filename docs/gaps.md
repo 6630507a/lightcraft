@@ -48,6 +48,8 @@ Hours are Opus 5.5 agent wall-clock hours (see [target-app-parity.md](target-app
 | 26 | **Performance at scale**: 85k-photo library opens in 1.7–4.7 s; 100k grid test pending; colour NR at half resolution | ROADMAP log, gpu-pipeline.md | large-catalog users | 15–30 | [target-app-parity](target-app-parity.md#by-dimension) |
 | 27 | **Windows / Linux runtime coverage**: Windows installer UI unverified on Windows (#79); GPU path proven on Apple and on one AMD GPU on Linux (Radeon 8060S, Vulkan); NVIDIA, Intel and DX12 unverified; the Linux riscv64 tarball (new in 0.6.0, #844) is cross-compiled and never run beyond a QEMU smoke test | ROADMAP, issues, `release.yml` | non-Mac users find bugs first | 13–27 | [hardware-parity](hardware-parity.md) |
 | 28 | **Small Classic shortcuts and keys**: rating `[` `]`, flag cycling, filter-bar keys, F1 help, panel keys (Tab, F5–F8) | [ui-parity](ui-parity.md#shortcuts) | Classic muscle memory | 4–8 | [ui-parity](ui-parity.md) |
+| 27 | **Windows / Linux runtime coverage**: Windows installer UI unverified on Windows (#79); GPU path proven on Apple only; the Linux riscv64 tarball (new in 0.6.0, #844) is cross-compiled and never run beyond a QEMU smoke test | ROADMAP, issues, `release.yml` | non-Mac users find bugs first | 15–30 | [hardware-parity](hardware-parity.md) |
+| 28 | **Small Classic shortcuts and keys**: flag cycling (backtick), the filter-bar `\` key, panel keys Tab and F5 (F6 / F7 are in open PR #1078; F8 and ⇧Tab landed) | [ui-parity](ui-parity.md#shortcuts) | Classic muscle memory | 2–4 | [ui-parity](ui-parity.md) |
 
 Beta-blocking gaps (B) total **~230–430 h**; with the stability and platform work they need around them,
 **~340–600 h** to beta (incl. 40–80 h for the ~92 open core-path user issues) (see [target-app-parity.md](target-app-parity.md#stage)).
@@ -87,6 +89,7 @@ Beta-blocking gaps (B) total **~230–430 h**; with the stability and platform w
 | 2026-10-12 | minor | Gap 10 shrinks: the Hasselblad Lunar (a Sony NEX-7 ARW under its own Make) decodes and is verified, 236 models (#1275) |
 | 2026-10-12 | minor | Gap 14: HLG AVIF export (`hdrTransfer`) and a tested SDR/HDR display decision |
 | 2026-10-12 | minor | Gap 13 narrowed: smart collections and stacks now import from `.lrcat` |
+| 2026-10-12 | minor | Gap 28 shrinks: F8 and Shift+Tab land; F1 and `[` `]` were already implemented; gap not closed |
 | 2026-10-11 | minor | Reviewed against main after 0.6.0: CR3 entry names the CRX variants `crx.rs` still refuses and the R7 / R6 Mark II C-RAW state (decoding, not verified, so the measured numbers don't move); CI and Windows / Linux entries note the riscv64 release build (#844); R7 fix added to Closed recently. Panel docking (UI.9, #869) closes no listed gap |
 | 2026-10-11 | minor | Camera colour entry: raws with a black-and-white camera JPEG take its tone curve (#577); gap not closed |
 | 2026-10-11 | minor | Gap 4: Compare and Reference views get zoom windows per pane (1:1 was a 2,560 px render magnified); overlays and soft proofing remain, 8–15 h → 4–8 h |
