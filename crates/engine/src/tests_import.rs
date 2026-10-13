@@ -33,9 +33,10 @@ fn ids(v: &Value, key: &str) -> usize {
 #[test]
 fn recursive_discovery_includes_sony_sr2_and_srf_case_insensitively() {
     let src = temp_dir("sony-discovery");
-    std::fs::create_dir_all(src.join("trip/day2")).unwrap();
+    std::fs::create_dir_all(src.join("trip").join("day2")).unwrap();
     let names = ["r1.SR2", "f828.srf", "trip/r1.sr2", "trip/f828.SRF", "trip/day2/r1.Sr2", "trip/day2/f828.SrF", "control.JPG"];
-    let mut expected: Vec<String> = names.iter().map(|name| src.join(name).to_string_lossy().into_owned()).collect();
+    let mut expected: Vec<String> =
+        names.iter().map(|name| name.split('/').fold(src.clone(), |p, part| p.join(part)).to_string_lossy().into_owned()).collect();
     for path in &expected {
         std::fs::write(path, b"discovery only, not a decoded photo").unwrap();
     }
@@ -54,7 +55,7 @@ fn recursive_import_with_duplicates() {
     let src = temp_dir("src");
     write_png(&src.join("a.png"), 1);
     write_png(&src.join("trip/b.png"), 2);
-    write_png(&src.join("trip/day2/c.PNG"), 3);
+    write_png(&src.join("trip").join("day2").join("c.PNG"), 3);
     std::fs::copy(src.join("a.png"), src.join("trip/a-copy.png")).unwrap(); // same bytes
     write_png(&src.join(".hidden/x.png"), 9);
     std::fs::write(src.join("notes.txt"), "not a photo").unwrap();
