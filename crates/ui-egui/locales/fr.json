@@ -1951,5 +1951,10 @@
   "Adding to Apple Photos…": "Ajout à Apple Photos…",
   "not added to Apple Photos (cancelled)": "non ajouté à Apple Photos (annulé)",
   "The first time, macOS asks whether LightCraft may control Photos.": "La première fois, macOS demande si LightCraft peut contrôler Photos.",
-  "Adding to Apple Photos": "Ajout à Apple Photos"
+  "Adding to Apple Photos": "Ajout à Apple Photos",
+  "Destination library": "Bibliothèque de destination",
+  "Lightroom Catalog Import": "Importation de catalogue Lightroom",
+  "Lightroom catalogs import into the open library; no separate catalog folder is created.": "Les catalogues Lightroom sont importés dans la bibliothèque ouverte ; aucun dossier de catalogue distinct n’est créé.",
+  "Show in Library": "Afficher dans la bibliothèque",
+  "These photos are only in memory. Open a library on disk and import the catalog again to save them.": "Ces photos sont uniquement en mémoire. Ouvrez une bibliothèque sur disque et importez à nouveau le catalogue pour les enregistrer."
 }

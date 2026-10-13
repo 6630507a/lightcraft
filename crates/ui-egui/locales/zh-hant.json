@@ -1951,5 +1951,10 @@
   "Adding to Apple Photos…": "正在加入 Apple 照片…",
   "not added to Apple Photos (cancelled)": "未加入 Apple 照片（已取消）",
   "The first time, macOS asks whether LightCraft may control Photos.": "第一次使用時，macOS 會詢問是否允許 LightCraft 控制「照片」。",
-  "Adding to Apple Photos": "正在加入 Apple 照片"
+  "Adding to Apple Photos": "正在加入 Apple 照片",
+  "Destination library": "目標圖庫",
+  "Lightroom Catalog Import": "Lightroom 目錄匯入",
+  "Lightroom catalogs import into the open library; no separate catalog folder is created.": "Lightroom 目錄會匯入目前開啟的圖庫，不會建立獨立的目錄資料夾。",
+  "Show in Library": "在圖庫中顯示",
+  "These photos are only in memory. Open a library on disk and import the catalog again to save them.": "這些相片僅保存在記憶體中。請開啟磁碟上的圖庫並再次匯入目錄以儲存相片。"
 }

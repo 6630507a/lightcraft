@@ -2145,5 +2145,10 @@
   "Adding to Apple Photos…": "Додавання до Apple Фото…",
   "not added to Apple Photos (cancelled)": "не додано до Apple Фото (скасовано)",
   "The first time, macOS asks whether LightCraft may control Photos.": "Першого разу macOS запитає, чи може LightCraft керувати програмою «Фото».",
-  "Adding to Apple Photos": "Додавання до Apple Фото"
+  "Adding to Apple Photos": "Додавання до Apple Фото",
+  "Destination library": "Бібліотека призначення",
+  "Lightroom Catalog Import": "Імпорт каталогу Lightroom",
+  "Lightroom catalogs import into the open library; no separate catalog folder is created.": "Каталоги Lightroom імпортуються у відкриту бібліотеку; окрема папка каталогу не створюється.",
+  "Show in Library": "Показати в бібліотеці",
+  "These photos are only in memory. Open a library on disk and import the catalog again to save them.": "Ці фотографії є лише в пам’яті. Відкрийте бібліотеку на диску та імпортуйте каталог повторно, щоб зберегти їх."
 }

@@ -1953,5 +1953,10 @@
   "Adding to Apple Photos…": "Appleの写真に追加中…",
   "not added to Apple Photos (cancelled)": "Appleの写真には追加されませんでした（キャンセル）",
   "The first time, macOS asks whether LightCraft may control Photos.": "初回は、LightCraftに写真の操作を許可するかmacOSが確認します。",
-  "Adding to Apple Photos": "Appleの写真に追加中"
+  "Adding to Apple Photos": "Appleの写真に追加中",
+  "Destination library": "読み込み先ライブラリ",
+  "Lightroom Catalog Import": "Lightroomカタログの読み込み",
+  "Lightroom catalogs import into the open library; no separate catalog folder is created.": "Lightroomカタログは開いているライブラリに読み込まれます。別のカタログフォルダーは作成されません。",
+  "Show in Library": "ライブラリに表示",
+  "These photos are only in memory. Open a library on disk and import the catalog again to save them.": "これらの写真はメモリ内にのみあります。ディスク上のライブラリを開き、カタログを再度読み込んで保存してください。"
 }

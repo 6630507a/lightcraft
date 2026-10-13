@@ -190,20 +190,11 @@ impl LightroomJob {
             return Err(error("Lightroom import cancelled"));
         }
         self.import.done.fetch_add(1, Ordering::Relaxed);
-        let paths: Vec<String> = data
-            .photos
-            .iter()
-            .filter(|photo| lightroom_catalog::number_for_job(&photo.image, "masterImage") == 0)
-            .map(|photo| photo.path.clone())
-            .collect();
-        let missing_sources = data
-            .photos
-            .iter()
-            .filter(|photo| lightroom_catalog::number_for_job(&photo.image, "masterImage") == 0)
-            .filter(|photo| !Path::new(&photo.path).is_file())
-            .map(|photo| normalize(&photo.path))
-            .collect();
-        let normal = self.import.prepare(&paths, cancel);
+        let (paths, missing_sources) = original_paths(&data, cancel)?;
+        // Catalog entries name files, never folders. Missing originals already have enough
+        // catalog metadata for placeholders; probing them again only adds failed I/O and errors.
+        self.import.total.fetch_add(paths.len(), Ordering::Relaxed);
+        let normal = self.import.prepare_files(paths, cancel);
         if cancel.load(Ordering::Relaxed) {
             normal.rollback();
             return Err(error("Lightroom import cancelled"));
@@ -261,6 +252,30 @@ pub fn commit_prepared(s: &mut crate::Session, mut prepared: PreparedLightroom) 
     let path = prepared.token.library_dir().map(|dir| dir.join("Interop/lightroom-index.json"));
     let bytes = if path.is_some() { Some(serde_json::to_vec(&applied.index).map_err(|e| error(e.to_string()))?) } else { None };
     Ok(LightroomCompletion { report: applied.report, finalization: LightroomArchiveFinalization { path, bytes } })
+}
+
+fn original_paths(data: &CatalogImport, cancel: &AtomicBool) -> crate::Result<(Vec<String>, HashSet<String>)> {
+    let mut paths = Vec::new();
+    let mut missing = HashSet::new();
+    let mut seen = HashSet::new();
+    for photo in &data.photos {
+        if cancel.load(Ordering::Relaxed) {
+            return Err(error("Lightroom import cancelled"));
+        }
+        if lightroom_catalog::number_for_job(&photo.image, "masterImage") != 0 {
+            continue;
+        }
+        let key = normalize(&photo.path);
+        if !seen.insert(key.clone()) {
+            continue;
+        }
+        if Path::new(&photo.path).is_file() {
+            paths.push(photo.path.clone());
+        } else {
+            missing.insert(key);
+        }
+    }
+    Ok((paths, missing))
 }
 
 fn normalize(path: &str) -> String {
