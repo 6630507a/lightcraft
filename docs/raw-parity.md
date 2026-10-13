@@ -21,6 +21,11 @@ ranked in [gaps.md](gaps.md). Details per format: [cr3.md](cr3.md),
 | **Preview-only** (embedded JPEG) | **232** (16%) | measured |
 | **Unsupported** (not imported, refused or decodes wrongly) | **36** (2%) | measured |
 | Models added since 2017 (Camera Raw 10+): verified / unverified / preview / unsupported | 83 / 639 / 24 / 8 of 754 | measured |
+| Decoded from sensor data and **verified** on a real file | **235** (16%) | measured: [raw/evidence.tsv](raw/evidence.tsv) |
+| Decoder path should handle it, **unverified** | **942** (65%) | measured from the format rules (632 of them DNG, mostly phones) |
+| **Preview-only** (embedded JPEG) | **234** (16%) | measured |
+| **Unsupported** (not imported, refused or decodes wrongly) | **35** (2%) | measured |
+| Models added since 2017 (Camera Raw 10+): verified / unverified / preview / unsupported | 82 / 640 / 24 / 8 of 754 | measured |
 | **Share of photographers whose camera fully works** (decodes from sensor data), use-weighted | **~85%** | estimated: measured classes × written usage weights × per-format confidence |
 | …of which on a body we have verified | **~42%** | estimated, same weights |
 | Camera colour: Adobe profiles vs ours | 1,500 Adobe Standard profiles, 481 models with Camera Matching profiles vs **4 bundled profiles** + per-file fits + 52 spectral matrices | measured (bundle listing, Adobe list, `assets/camera-profiles`) |
@@ -31,6 +36,13 @@ Re-measure with `python3 docs/raw/coverage.py` (standard library only): it class
 model from the format rules in the script (which mirror `crates/raw/src`) plus the per-model evidence,
 rewrites [raw/coverage.tsv](raw/coverage.tsv) and prints the tables below; `--check` fails when the
 committed table is stale.
+
+Folder discovery, desktop file pickers, CLI and MCP share
+`lightcraft_engine::import::EXTENSIONS`. The list includes formats that may open only from an
+embedded preview or report a decoder error; an extension is not a promise of sensor decoding.
+The 2026-10-12 release CLI check of the public DSC-R1 SR2 and DSC-F828 SRF samples found the
+same photos and decode status through recursive and direct import. DSC-F828 moves from
+unsupported to preview-only in the counts; sensor-decoding readiness is unchanged.
 
 ## How it was measured
 
@@ -67,7 +79,7 @@ committed table is stale.
 
 | Maker | Adobe models | verified | unverified | preview | unsupported | Main reason for preview / unsupported |
 |---|---:|---:|---:|---:|---:|---|
-| Sony | 149 | 86 | 51 | 9 | 3 | DSLR-A200…A390 and A850 12-bit compressed ARW (preview, #535); A100 and DSC-F828 refused (regression #702); SRF not imported |
+| Sony | 149 | 86 | 51 | 10 | 2 | DSLR-A200…A390 and A850 12-bit compressed ARW (preview, #535); A100 remains classified unsupported in the recorded evidence; DSC-F828 SRF imports as preview-only; DSC-V3 preview not verified |
 | Canon | 134 | 12 | 99 | 21 | 2 | CRW (2000–2004 bodies) preview; EOS-1D / 1Ds TIFF raws not imported |
 | Samsung | 128 | 1 | 118 | 9 | 0 | compressed SRW (NX1, NX30, NX300, NX500, NX2000, NX3000, NX3300, NX mini, Galaxy NX) |
 | Apple | 113 | 1 | 112 | 0 | 0 | — (DNG / ProRAW) |
@@ -129,9 +141,10 @@ checked, and Canon, the largest bucket, is the weakest of the big four.
 | ARW | packed 12-bit (A900) | ✅ | one CC0 file; A850 unmeasured |
 | ARW | ARW6 Compressed / HQ (compression 32766; ILCE-7RM6) | ✅ | 8 CC0 files; 12-bit mode unsupported; `docs/arw6-compression.md` |
 | ARW | 12-bit compressed of DSLR-A200…A390 | ⬜ | preview (#535) |
-| ARW | A100 ARW; SRF (F828, V3) | ⬜ | refused (#702); SRF not imported |
+| ARW | A100 ARW | ⬜ | recorded as refused (#702); not rechecked here |
+| SRF | DSC-F828; DSC-V3 | ⬜ | discovered during folder import; F828 imports as preview-only, V3 has not been checked on a real file |
 | ARW | ARQ pixel shift | ⬜ | no code |
-| SR2 | DSC-R1 | ✅ | CC0 3221 sample |
+| SR2 | DSC-R1 | ✅ | CC0 3221 sample; folder and direct import both decode sensor data |
 | RAF | uncompressed, lossless and lossy compressed; Bayer and X-Trans; GFX 14/16-bit | ✅ | 24 files from 13 bodies exact |
 | RAF | pre-X FinePix without a raw IFD | ⬜ | `raf.rs` refuses (26 Adobe models, estimated split) |
 | ORF | uncompressed 16-bit, 12-bit packed, two-field 12-bit, 12.8 bpp | ✅ | E-1, E-400, XZ-2 corpus; #651 |
@@ -254,7 +267,7 @@ works, from [raw/usage-weights.tsv](raw/usage-weights.tsv).
 | 4 | Nikon packed 14-bit under a compressed tag (Z 6II uncompressed, #769) | +0.2 | 1–2 | ~0.13 | PR #671 exists |
 | 5 | Sony DSLR-A200…A390 / A850 12-bit compressed ARW | +0.4 | 3–6 | ~0.08 | samples on raw.pixls.us |
 | 6 | Pre-X FinePix RAF | +0.6 | 4–8 | ~0.08 | samples |
-| 7 | Sony A100 and DSC-F828 regression (#702) | +0.1 | 1–2 | ~0.07 | samples on raw.pixls.us |
+| 7 | Sony A100 regression (#702) and DSC-F828 sensor decoding (preview-only) | +0.1 | 1–2 | ~0.07 | samples on raw.pixls.us |
 | 8 | Canon CRW (2000–2004 bodies) | +1.2 by the uniform tail weight, far less by real use | 6–12 | ≤ 0.1 | samples |
 | 9 | Nikon HE / HE★ NEF (Z 8, Z 9, Z 6III, Z f, Z50II, Z5II set to HE) | +1.1 | 20–40 | ~0.04 | a pure-Rust JPEG XS decoder |
 | 10 | Compressed SRW, Hasselblad 3FR, IIQ, X3F, MRW, KDC, ERF, DCR, MEF, GPR | +0.6 together | 45–85 | ~0.01 | samples; low use |
@@ -278,6 +291,7 @@ Beyond decoding:
 | 2026-10-12 | minor | Olympus E-10: as-shot white balance (`0x1017`/`0x1018`) and black level (`0x1012` in `0x102c` ValidBits units) from the main maker note, issue #1273; ΔE76 against its thumbnail 18.5 → 11.5, camera-look fit now accepted; counts unchanged |
 | 2026-10-13 | minor | Nikon D90 image area (4288 × 2848 at 10, 10) and white level (3830) measured on 10 of 550 NEFs from one body: its 42 filler columns no longer develop as a pink band |
 | 2026-10-12 | minor | Hasselblad Lunar verified (a Sony NEX-7 ARW under Make HASSELBLAD, now decoded): 236 verified, 232 preview; an uncompressed Leaf MOS is recognised as a raw (preview only) instead of opening as a greyscale image of its mosaic (#1275) |
+| 2026-10-12 | minor | SR2/SRF folder discovery and shared CLI/MCP extensions; public DSC-R1 sensor import and DSC-F828 preview-only import agree with direct import. F828 reclassified as preview-only (234 preview, 35 unsupported); sensor-decoding scores unchanged |
 | 2026-10-10 | minor | Compressed ORF: pointer to the two Olympus patents that describe the method, as a clean-room starting point |
 | 2026-10-12 | minor | PEF without area tags: masked border rows and columns trimmed against the BlackPoint (issue #1271; KP, KF, K-3 Mark III, K-70, K-1, K-1 Mark II, K-S1, K-S2, 645Z); counts unchanged |
 | 2026-10-11 | minor | EOS R5 Mark II verified (CRX QP-map first literal and limited-length escape, odd-height Bayer planes; 4 CC0 files pinned, QP maps of 33,665 private files): 235 verified, 942 unverified; use-weighted 85% (42% on verified bodies); decoding 77%, RAW readiness unchanged at ~56% |
