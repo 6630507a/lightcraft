@@ -701,6 +701,7 @@ pub(crate) fn apply_prepared(s: &mut crate::Session, data: CatalogImport, contex
     // Normal import counts probed originals; catalog import also adds offline records,
     // distinct originals with identical bytes, and virtual copies.
     let mut imported = files.imported.len();
+    let mut promoted = HashSet::new();
     let mut unmapped = BTreeMap::new();
     let mut preserved = 0;
     // Masters precede their virtual copies.
@@ -811,6 +812,10 @@ pub(crate) fn apply_prepared(s: &mut crate::Session, data: CatalogImport, contex
         if keep_develop {
             (p.develop, p.edited) = previous_develop;
         }
+        // Missing files bypass normal-file preparation, including its Local promotion.
+        // Import still joins the library, and a virtual copy must inherit that membership.
+        let was_local = p.local;
+        p.local = false;
         let photo_id = p.id;
         // Only virtual-copy masters need a second owned photo while operations are staged.
         // Keeping every photo here doubled the new-record working set on large catalogs.
@@ -818,6 +823,10 @@ pub(crate) fn apply_prepared(s: &mut crate::Session, data: CatalogImport, contex
             planned.insert(photo_id, p.clone());
         }
         if s.catalog.photo(p.id).is_some() {
+            if was_local && promoted.insert(p.id) {
+                imported += 1;
+                ops.push(Op::SetLocal { id: p.id, local: false });
+            }
             ops.extend([
                 Op::SetRating { id: p.id, rating: p.rating },
                 Op::SetFlag { id: p.id, flag: p.flag },
@@ -948,6 +957,55 @@ mod tests {
             warnings: Vec::new(),
         }
     }
+    #[test]
+    fn offline_local_master_and_copy_join_library_with_one_undo_step() {
+        let mut s = crate::Session::new();
+        let data = sample();
+        let master_id = s.catalog.alloc_photo_id();
+        let mut master = Photo::new(master_id, Source::File { path: "/missing/test.ARW".into() }, "test.ARW", "ARW", 20, 10, "before");
+        master.local = true;
+        s.commit("Browse folder", Op::AddPhoto { photo: Box::new(master) }).unwrap();
+        s.undo.clear();
+        let before = s.catalog.photo(master_id).unwrap().clone();
+        let mut index = ImportIndex::default();
+        let missing_sources = [key("/missing/test.ARW")].into_iter().collect();
+        let mut import = |s: &mut crate::Session| {
+            let undo0 = s.undo.len();
+            apply_prepared(
+                s,
+                data.clone(),
+                ApplyPrepared {
+                    update_existing: false,
+                    files: Default::default(),
+                    index: &mut index,
+                    archive_path: None,
+                    missing_sources: &missing_sources,
+                    undo0,
+                },
+            )
+            .unwrap()
+            .report
+        };
+        let first = import(&mut s);
+        assert_eq!(first["mapping"]["1"], master_id.0);
+        assert_eq!(first["imported"], 2, "the promoted master and new copy both join All Photos");
+        assert_eq!(first["missing"], json!(["/missing/test.ARW"]));
+        assert_eq!(s.catalog.len(), 2);
+        assert!(s.catalog.photos().all(|photo| !photo.local));
+        assert_eq!(s.undo.len(), 1);
+        let second = import(&mut s);
+        assert_eq!(second["imported"], 0);
+        assert_eq!(second["mapping"], first["mapping"]);
+        s.undo_step().unwrap();
+        s.undo_step().unwrap();
+        assert_eq!(s.catalog.len(), 1);
+        assert_eq!(s.catalog.photo(master_id), Some(&before));
+        assert!(s.catalog.albums().next().is_none());
+        let third = import(&mut s);
+        assert_eq!(third["imported"], 2);
+        assert!(s.catalog.photos().all(|photo| !photo.local));
+    }
+
     #[test]
     fn imports_copies_collections_ratings_and_mapped_edits_in_one_undo_step() {
         let mut s = crate::Session::new();
